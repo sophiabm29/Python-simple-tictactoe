@@ -1,0 +1,149 @@
+#board
+#display board
+#play game
+#handle turn
+#check win
+    #check rows
+    #check columns
+    #check diagonals
+#check tie
+#flip players
+#
+
+board = ["-","-","-",
+         "-","-","-",
+         "-","-","-"]
+#If game is still going
+game_still_going = True
+
+#Who won? Is there a tie?
+winner = None
+#Who's turn is it
+currentPlayer = "X"
+def playGame():
+    #Display initial board
+    displayBoard()
+    while game_still_going:
+        #handle a single turn of an arbitrary player
+        handleTurn(currentPlayer)
+        checkGameOver()
+        
+        #flip to other player
+        flipPlayer()
+    #The game has ended
+    if winner == "X" or winner == "O":
+        print(winner + " won.")
+    elif winner == None:
+        print("Tie.")
+def displayBoard():
+    print (board[0] + " | " + board[1] + " | " + board[2])
+    print (board[3] + " | " + board[4] + " | " + board[5])
+    print (board[6] + " | " + board[7] + " | " + board[8])
+    
+#play game of tic tac toe
+
+#Handle a single turn
+def handleTurn(player):
+    
+    print(player + "'s turn.")
+    position = input("Choose a position from 1-9: ")
+    while position not in ["1","2","3","4","5","6","7","8","9"]:
+        position = input("Invalid Input. Try again: ")
+    position = int(position) - 1
+    while board[position] != "-":
+        position = input("Invalid Input. Try again: ")
+        position = int(position) - 1
+    board[position] = player
+    
+    displayBoard()
+    
+def checkGameOver():
+    check_Win()
+    check_Tie()
+    
+def check_Win():
+    #set up global variable
+    global winner
+    #check rows
+    row_winner = checkRows()
+    #check columns
+    col_winner = checkCols()
+    #check diagonals
+    diag_winner = checkDiag()
+    if row_winner:
+        #there was a win in a row
+        winner = row_winner
+    elif col_winner:
+        #there was a win in a column
+        winner = col_winner
+    elif diag_winner:
+        #there was a win in a diagonal
+        winner = diag_winner
+    else:
+        #there was no win
+        winner = None
+    return 
+def checkRows():
+    global game_still_going
+    #check if a row has all X or all O
+    row1 = board[0] == board[1] == board[2] != "-"
+    row2 = board[3] == board[4] == board[5] != "-"
+    row3 = board[6] == board[7] == board[8] != "-"
+    if row1 or row2 or row3:
+        game_still_going = False
+    #return the winner 
+    if row1:
+        return board[0]
+    elif row2:
+        return board[3]
+    elif row3:
+        return board[6]
+    return
+def checkCols():
+    global game_still_going
+    #check if a column has all X or all O
+    col1 = board[0] == board[3] == board[6] != "-"
+    col2 = board[1] == board[4] == board[7] != "-"
+    col3 = board[2] == board[5] == board[8] != "-"
+    if col1 or col2 or col3:
+        game_still_going = False
+    #return the winner 
+    if col1:
+        return board[0]
+    elif col2:
+        return board[1]
+    elif col3:
+        return board[2]
+    return
+def checkDiag():
+    global game_still_going
+    #check if a diagonal has all X or O
+    diag1 = board[0] == board[4] == board[8] != "-"
+    diag2 = board[2] == board[4] == board[6] != "-"
+    if diag1 or diag2:
+        game_still_going = False
+    #return the winner
+    if diag1:
+        return board[0]
+    elif diag2:
+        return board[2]
+    
+    return
+def check_Tie():
+    global game_still_going
+    count = 0;
+    for i in range (9):
+        if board[i] != "-":
+            count = count + 1 
+    if count == 9:
+        game_still_going = False
+    return
+def flipPlayer():
+    #switch players
+    global currentPlayer
+    if currentPlayer == "X":
+        currentPlayer = "O"
+    elif currentPlayer == "O":
+        currentPlayer = "X"
+    return 
+playGame()
